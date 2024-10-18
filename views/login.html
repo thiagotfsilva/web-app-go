@@ -1,28 +1,25 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <title>DevBook - Login</title>
   <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
-
-  <title>Document</title>
 </head>
 
 <body>
   <div class="container-login">
-    <div class="">
-      <form id="login" class="devbook-form">
-        <span>Seja bem vindo ao DevBook</span>
+    <div>
+      <form class="devbook-form" id="login">
+        <span>Seja bem vindo ao DevBook!</span>
         <div>
-          <input type="text" name="email" id="email" placeholder="Digite seu e-mail" required>
+          <input type="text" name="email" id="email" placeholder="Digite o seu e-mail" required>
         </div>
         <div>
-          <input type="password" name="password" id="password" placeholder="Digite seu senha" required>
+          <input type="password" name="senha" id="senha" placeholder="Digite a sua senha" required>
         </div>
-        <a href="#">Clique aqui para criar a sua conta</a>
-        <button class="btn-devbook">Login</button>
+        <a href="/create"> Clique aqui para criar a sua conta </a>
+        <button type="submit" class="btn-devbook">Login</button>
       </form>
     </div>
   </div>
