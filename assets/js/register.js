@@ -13,9 +13,16 @@ function createUser(event) {
     method: "POST",
     data: {
       name: $("#name").val(),
-      nickName: $("#nickName").val(),
+      nick: $("#nick").val(),
       email: $("#email").val(),
       password: $("#password").val(),
     }
-  });
+  })
+  .done(function(){
+    alert("user registered success")
+  })
+  .fail(function(error){
+    console.log(error)
+    alert("user not registered")
+  })
 }

@@ -3,8 +3,8 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"log"
 	"net/http"
+	"web-app-go/src/response"
 	"web-app-go/src/utils"
 )
 
@@ -18,20 +18,29 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user, err := json.Marshal(map[string]string{
 		"name":     r.FormValue("name"),
 		"email":    r.FormValue("email"),
-		"nickName": r.FormValue("nickName"),
+		"nick":     r.FormValue("nick"),
 		"password": r.FormValue("password"),
 	})
 	if err != nil {
-		log.Fatal(err)
+		response.JSON(w, http.StatusBadRequest, response.ErroResponse{Erro: err.Error()})
+		return
 	}
 
-	response, err := http.Post(
+	res, err := http.Post(
 		"http://localhost:5000/users",
 		"application/json",
 		bytes.NewBuffer(user),
 	)
 	if err != nil {
-		log.Fatal(err)
+		response.JSON(w, http.StatusInternalServerError, response.ErroResponse{Erro: err.Error()})
+		return
 	}
-	defer response.Body.Close()
+	defer res.Body.Close()
+
+	if res.StatusCode >= 400 {
+		response.HandleStatusCode(w, res)
+		return
+	}
+
+	response.JSON(w, res.StatusCode, nil)
 }
