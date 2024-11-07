@@ -3,7 +3,9 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"web-app-go/src/config"
 	"web-app-go/src/response"
 	"web-app-go/src/utils"
 )
@@ -26,8 +28,9 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	url := fmt.Sprintf("%s/users", config.ApiUrl)
 	res, err := http.Post(
-		"http://localhost:5000/users",
+		url,
 		"application/json",
 		bytes.NewBuffer(user),
 	)

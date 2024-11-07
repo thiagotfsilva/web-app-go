@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
+	"web-app-go/src/config"
+	"web-app-go/src/cookies"
+	"web-app-go/src/models"
 	"web-app-go/src/response"
 	"web-app-go/src/utils"
 )
@@ -26,17 +28,28 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := http.Post(
-		"http://localhost:5000/login",
-		"application/json",
-		bytes.NewBuffer(user),
-	)
+	url := fmt.Sprintf("%s/login", config.ApiUrl)
+	res, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	if err != nil {
 		response.JSON(w, http.StatusBadRequest, response.ErroResponse{Erro: err.Error()})
 		return
 	}
+	defer res.Body.Close()
 
-	token, _ := io.ReadAll(res.Body)
+	if res.StatusCode >= 400 {
+		response.HandleStatusCode(w, res)
+		return
+	}
 
-	fmt.Println(res.StatusCode, string(token))
+	var AuthData models.Auth
+	if err = json.NewDecoder(res.Body).Decode(&AuthData); err != nil {
+		response.JSON(w, http.StatusUnprocessableEntity, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+
+	if err = cookies.Save(w, AuthData.Id, AuthData.Token); err != nil {
+		response.JSON(w, http.StatusUnprocessableEntity, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+	response.JSON(w, http.StatusOK, nil)
 }
