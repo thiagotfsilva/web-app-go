@@ -31,7 +31,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	url := fmt.Sprintf("%s/login", config.ApiUrl)
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	if err != nil {
-		response.JSON(w, http.StatusBadRequest, response.ErroResponse{Erro: err.Error()})
+		response.JSON(w, http.StatusInternalServerError, response.ErroResponse{Erro: err.Error()})
 		return
 	}
 	defer res.Body.Close()
@@ -47,7 +47,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = cookies.Save(w, AuthData.Id, AuthData.Token); err != nil {
+	if err = cookies.SaveCookies(w, AuthData.Id, AuthData.Token); err != nil {
 		response.JSON(w, http.StatusUnprocessableEntity, response.ErroResponse{Erro: err.Error()})
 		return
 	}

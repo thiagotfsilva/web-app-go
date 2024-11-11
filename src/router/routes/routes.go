@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"web-app-go/src/middleware"
 
 	"github.com/gorilla/mux"
 )
@@ -18,9 +19,20 @@ type Route struct {
 func Config(router *mux.Router) *mux.Router {
 	routes := routesLogin
 	routes = append(routes, userRoutes...)
+	routes = append(routes, homePageRoute)
 
 	for _, route := range routes {
-		router.HandleFunc(route.URI, route.Function).Methods(route.Method)
+		if route.Authentication {
+			router.HandleFunc(
+				route.URI,
+				middleware.Logger(middleware.Authenticate(route.Function)),
+			).Methods(route.Method)
+		} else {
+			router.HandleFunc(
+				route.URI,
+				middleware.Logger(route.Function),
+			).Methods(route.Method)
+		}
 	}
 
 	fileServer := http.FileServer(http.Dir("./assets/"))

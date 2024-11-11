@@ -13,7 +13,7 @@ func Config() {
 	s = securecookie.New(config.HashKey, config.BlockKey)
 }
 
-func Save(w http.ResponseWriter, id, token string) error {
+func SaveCookies(w http.ResponseWriter, id, token string) error {
 	data := map[string]string{
 		"id":    id,
 		"token": token,
@@ -32,4 +32,18 @@ func Save(w http.ResponseWriter, id, token string) error {
 	})
 
 	return nil
+}
+
+func ReadCookies(r *http.Request) (map[string]string, error) {
+	cookie, err := r.Cookie("data")
+	if err != nil {
+		return nil, err
+	}
+
+	valuesCookies := make(map[string]string)
+	if err = s.Decode("data", cookie.Value, &valuesCookies); err != nil {
+		return nil, err
+	}
+
+	return valuesCookies, nil
 }

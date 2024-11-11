@@ -14,11 +14,9 @@ import (
 )
 
 func init() {
-	hashKey := hex.EncodeToString(securecookie.GenerateRandomKey(16))
-	fmt.Println(hashKey)
-
-	blockKey := hex.EncodeToString(securecookie.GenerateRandomKey(16))
-	fmt.Println(blockKey)
+	// gera hashKey e blockKey
+	hex.EncodeToString(securecookie.GenerateRandomKey(16))
+	hex.EncodeToString(securecookie.GenerateRandomKey(16))
 }
 
 func main() {
