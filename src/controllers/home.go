@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"web-app-go/src/config"
+	"web-app-go/src/cookies"
 	"web-app-go/src/models"
 	"web-app-go/src/request"
 	"web-app-go/src/response"
@@ -31,5 +33,14 @@ func LoadHomePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.ExecTemplate(w, "home.html", publications)
+	cookie, _ := cookies.ReadCookies(r)
+	userId, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	utils.ExecTemplate(w, "home.html", struct {
+		Publications []models.Publication
+		UserId       uint64
+	}{
+		Publications: publications,
+		UserId:       userId,
+	})
 }
