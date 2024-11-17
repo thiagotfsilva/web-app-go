@@ -1,0 +1,42 @@
+{{ define "likes" }}
+<span>{{ .Likes }} curtidas</span>
+{{ end }}
+
+{{ define "edit" }}
+<a href="/edit">Editar</a>
+{{ end }}
+
+{{ define "delete" }}
+<a href="/delete">Deletar</a>
+{{ end }}
+
+{{ define "header-publication" }}
+<h1 class="display-4">{{ .Title}}</h1>
+<p class="lead">{{ .Content }}</p>
+<a href="#">{{ .AuthorNickName }} - {{ .CreatedAt.Format "02/01/2006 }}</a>
+<hr class="my-4">
+<!-- 
+  formatação de data em go
+  Jan 2 15:04:05 2006 -> 1 2 3 4 5 6
+-->
+{{ end }}
+
+{{ define "publication-private" }}
+<div class="jumbotron" data-publication-id="{{ .Id }}">
+  {{ template "header-publication" .}}
+  <p>
+    {{ template "likes" . }}
+    {{ template "edit" . }}
+    {{ template "delete" . }}
+  </p>
+</div>
+{{ end }}
+
+{{ define "publication-public" }}
+<div class="jumbotron" data-publication-id="{{ .Id }}">
+  {{ template "header-publication" . }}
+  <p>
+    {{ template "likes" . }}
+  </p>
+</div>
+{{ end }}
