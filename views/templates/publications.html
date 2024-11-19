@@ -1,19 +1,24 @@
 {{ define "likes" }}
-<span>{{ .Likes }} curtidas</span>
+<i class="fa-solid fa-heart"></i>
+<span>{{ .Likes }}</span>
 {{ end }}
 
 {{ define "edit" }}
-<a href="/edit">Editar</a>
+<a href="/edit" style="text-decoration: none;">
+  <i class="fa-solid fa-pen-to-square"></i>
+</a>
 {{ end }}
 
 {{ define "delete" }}
-<a href="/delete">Deletar</a>
+<a href="/delete" style="text-decoration: none;">
+  <i class="fa-solid fa-trash-can" style="color: red;"></i>
+</a>
 {{ end }}
 
 {{ define "header-publication" }}
-<h1 class="display-4">{{ .Title}}</h1>
+<h1 class="display-4">{{ .Title }}</h1>
 <p class="lead">{{ .Content }}</p>
-<a href="#">{{ .AuthorNickName }} - {{ .CreatedAt.Format "02/01/2006 }}</a>
+<a href="#">{{ .AuthorNickName }} - {{ .CreatedAt.Format "02/01/2006" }}</a>
 <hr class="my-4">
 <!-- 
   formatação de data em go
