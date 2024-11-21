@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"web-app-go/src/config"
 	"web-app-go/src/request"
 	"web-app-go/src/response"
+
+	"github.com/gorilla/mux"
 )
 
 func CreatePublication(w http.ResponseWriter, r *http.Request) {
@@ -46,4 +49,42 @@ func CreatePublication(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, res.StatusCode, nil)
+}
+
+func LikePublication(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	publicationId, err := strconv.ParseUint(params["publicationId"], 10, 64)
+	if err != nil {
+		response.JSON(
+			w,
+			http.StatusBadRequest,
+			response.ErroResponse{Erro: err.Error()},
+		)
+		return
+	}
+
+	url := fmt.Sprintf("%s/publications/%d/likes", config.ApiUrl, publicationId)
+	res, err := request.HandlerRequestAuthenticate(
+		r,
+		http.MethodPost,
+		url,
+		nil,
+	)
+	if err != nil {
+		response.JSON(
+			w,
+			http.StatusInternalServerError,
+			response.ErroResponse{Erro: err.Error()},
+		)
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 400 {
+		response.HandleStatusCode(w, res)
+		return
+	}
+
+	response.JSON(w, res.StatusCode, nil)
+
 }

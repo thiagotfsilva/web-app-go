@@ -13,10 +13,12 @@ type ErroResponse struct {
 func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-
-	if err := json.NewEncoder(w).Encode(data); err != nil {
-		log.Fatal(err)
+	if data != nil {
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			log.Fatal(err)
+		}
 	}
+
 }
 
 // HandleStatusCode trata as requisições com status code 400 ou superior
