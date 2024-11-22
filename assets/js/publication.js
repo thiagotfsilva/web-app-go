@@ -31,7 +31,7 @@ function deslikePublication(event) {
     const likesCount = element.next("span");
     const likes = parseInt(likesCount.text());
 
-    likesCount.text(likes + 1);
+    likesCount.text(likes - 1);
 
     element.removeClass('deslike-publication');
     element.removeClass('text-danger');
