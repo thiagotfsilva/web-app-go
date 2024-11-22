@@ -1,5 +1,7 @@
 $('#nova-publicacao').on('submit', createPublication);
-$('.likes-publication').on('click', likesPublication);
+
+$(document).on('click', '.like-publication', likePublication);
+$(document).on('click', '.deslike-publication', deslikePublication);
 
 function createPublication(event) {
   event.preventDefault();
@@ -17,17 +19,51 @@ function createPublication(event) {
   });
 }
 
-function likesPublication(event) {
+function deslikePublication(event) {
   event.preventDefault();
   const element = $(event.target);
   const publicationId = element.closest('div').data('publication-id');
 
   $.ajax({
-    url: `publications/${publicationId}/likes`,
+    url: `publications/${publicationId}/dislike`,
     method: 'POST',
   }).done(function() {
-    alert("Publicação curtida");
+    const likesCount = element.next("span");
+    const likes = parseInt(likesCount.text());
+
+    likesCount.text(likes + 1);
+
+    element.removeClass('deslike-publication');
+    element.removeClass('text-danger');
+    element.addClass('like-publication')
   }).fail(function() {
     alert("Erro ao curtir publicação");
+  }).always(function() {
+    element.prop('disabled', false);
+  });
+
+}
+
+function likePublication(event) {
+  event.preventDefault();
+  const element = $(event.target);
+  const publicationId = element.closest('div').data('publication-id');
+  element.prop('disabled', true);
+  $.ajax({
+    url: `publications/${publicationId}/like`,
+    method: 'POST',
+  }).done(function() {
+    const likesCount = element.next("span");
+    const likes = parseInt(likesCount.text());
+
+    likesCount.text(likes + 1);
+
+    element.addClass('deslike-publication');
+    element.addClass('text-danger');
+    element.removeClass('like-publication')
+  }).fail(function() {
+    alert("Erro ao curtir publicação");
+  }).always(function() {
+    element.prop('disabled', false);
   });
 }

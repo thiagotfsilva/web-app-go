@@ -13,7 +13,7 @@ var publicationRoutes = []Route{
 		Authentication: true,
 	},
 	{
-		URI:            "/publications/{publicationId}/likes",
+		URI:            "/publications/{publicationId}/like",
 		Method:         http.MethodPost,
 		Function:       controllers.LikePublication,
 		Authentication: true,

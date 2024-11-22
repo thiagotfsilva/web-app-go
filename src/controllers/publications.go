@@ -63,7 +63,8 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url := fmt.Sprintf("%s/publications/%d/likes", config.ApiUrl, publicationId)
+	url := fmt.Sprintf("%s/publications/%d/like", config.ApiUrl, publicationId)
+
 	res, err := request.HandlerRequestAuthenticate(
 		r,
 		http.MethodPost,
