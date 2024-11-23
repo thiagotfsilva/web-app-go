@@ -7,8 +7,10 @@ import (
 	"net/http"
 	"strconv"
 	"web-app-go/src/config"
+	"web-app-go/src/models"
 	"web-app-go/src/request"
 	"web-app-go/src/response"
+	"web-app-go/src/utils"
 
 	"github.com/gorilla/mux"
 )
@@ -123,6 +125,78 @@ func DislikePublication(w http.ResponseWriter, r *http.Request) {
 	if res.StatusCode >= 400 {
 		response.HandleStatusCode(w, res)
 		return
+	}
+
+	response.JSON(w, res.StatusCode, nil)
+}
+
+func LoadEditPage(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	publicationId, err := strconv.ParseUint(params["publicationId"], 10, 64)
+	if err != nil {
+		response.JSON(w, http.StatusBadRequest, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/publications/%d", config.ApiUrl, publicationId)
+	res, err := request.HandlerRequestAuthenticate(r, http.MethodGet, url, nil)
+	if err != nil {
+		response.JSON(w, http.StatusInternalServerError, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 400 {
+		response.HandleStatusCode(w, res)
+		return
+	}
+
+	var publication models.Publication
+	if err = json.NewDecoder(res.Body).Decode(&publication); err != nil {
+		response.JSON(w, http.StatusUnprocessableEntity, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+
+	utils.ExecTemplate(w, "edit-publication.html", publication)
+}
+
+func EditPublication(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	publicationId, err := strconv.ParseUint(params["publicationId"], 10, 64)
+	if err != nil {
+		response.JSON(w, http.StatusBadRequest, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+
+	r.ParseForm()
+	publication, err := json.Marshal(map[string]string{
+		"title":   r.FormValue("title"),
+		"content": r.FormValue("content"),
+	})
+	if err != nil {
+		response.JSON(w, http.StatusBadRequest, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/publications/%d", config.ApiUrl, publicationId)
+	res, err := request.HandlerRequestAuthenticate(
+		r,
+		http.MethodPut,
+		url,
+		bytes.NewBuffer(publication),
+	)
+	if err != nil {
+		response.JSON(
+			w,
+			http.StatusInternalServerError,
+			response.ErroResponse{Erro: err.Error()},
+		)
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 400 {
+		response.HandleStatusCode(w, res)
 	}
 
 	response.JSON(w, res.StatusCode, nil)

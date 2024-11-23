@@ -3,6 +3,8 @@ $('#nova-publicacao').on('submit', createPublication);
 $(document).on('click', '.like-publication', likePublication);
 $(document).on('click', '.deslike-publication', deslikePublication);
 
+$('#edit-publication').on('click', editPublication);
+
 function createPublication(event) {
   event.preventDefault();
   $.ajax({
@@ -65,5 +67,24 @@ function likePublication(event) {
     alert("Erro ao curtir publicação");
   }).always(function() {
     element.prop('disabled', false);
+  });
+}
+
+function editPublication() {
+  $(this).prop('disabled', true);
+  const publicationId = $(this).data('publication-id');
+  $.ajax({
+    url: `/publications/${publicationId}`,
+    method: 'PUT',
+    data: {
+      title: $('#title').val(),
+      content: $('#content').val(),
+    }
+  }).done(function() {
+    alert("sucesso ao editar publicação")
+  }).fail(function() {
+    alert("Erro ao editar publicação")
+  }).always(function() {
+    $('#edit-publication').prop('disabled', false)
   });
 }
