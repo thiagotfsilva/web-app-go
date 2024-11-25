@@ -1,5 +1,5 @@
 {{ define "likes" }}
-<i class="fa-solid fa-heart like-publication"></i>
+<i class="fa-solid fa-heart like-publication" style="cursor: pointer;"></i>
 <span>{{ .Likes }}</span>
 {{ end }}
 
@@ -10,9 +10,9 @@
 {{ end }}
 
 {{ define "delete" }}
-<a href="/publications/{{ .Id }}/delete" style="text-decoration: none;">
-  <i class="fa-solid fa-trash-can" style="color: red;"></i>
-</a>
+
+<i class="fa-solid fa-trash-can delete-publication" style="color: red;cursor: pointer;"></i>
+
 {{ end }}
 
 {{ define "header-publication" }}

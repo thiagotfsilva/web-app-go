@@ -2,6 +2,7 @@ package cookies
 
 import (
 	"net/http"
+	"time"
 	"web-app-go/src/config"
 
 	"github.com/gorilla/securecookie"
@@ -46,4 +47,15 @@ func ReadCookies(r *http.Request) (map[string]string, error) {
 	}
 
 	return valuesCookies, nil
+}
+
+// Apaga o valor dentro do cookie
+func DeleteCookies(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "data",
+		Value:    "",
+		Path:     "/login",
+		HttpOnly: true,
+		Expires:  time.Unix(0, 0),
+	})
 }

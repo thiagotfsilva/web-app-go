@@ -13,6 +13,10 @@ import (
 )
 
 func LoadLoginView(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.ReadCookies(r)
+	if cookie["token"] != "" {
+		http.Redirect(w, r, "/home", http.StatusFound)
+	}
 	utils.ExecTemplate(w, "login.html", nil)
 }
 
@@ -52,4 +56,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.JSON(w, http.StatusOK, nil)
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	cookies.DeleteCookies(w)
+	http.Redirect(w, r, "/login", http.StatusFound)
 }
