@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"web-app-go/src/config"
+	"web-app-go/src/models"
+	"web-app-go/src/request"
 	"web-app-go/src/response"
 	"web-app-go/src/utils"
 )
@@ -46,4 +49,40 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, res.StatusCode, nil)
+}
+
+func LoadUserPage(w http.ResponseWriter, r *http.Request) {
+	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
+	url := fmt.Sprintf("%s/users?user=%s", config.ApiUrl, nameOrNick)
+	res, err := request.HandlerRequestAuthenticate(
+		r,
+		http.MethodGet,
+		url,
+		nil,
+	)
+	if err != nil {
+		response.JSON(
+			w,
+			http.StatusInternalServerError,
+			response.ErroResponse{Erro: err.Error()},
+		)
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 400 {
+		response.HandleStatusCode(w, res)
+	}
+
+	var users []models.User
+	if err = json.NewDecoder(res.Body).Decode(&users); err != nil {
+		response.JSON(
+			w,
+			http.StatusUnprocessableEntity,
+			response.ErroResponse{Erro: err.Error()},
+		)
+		return
+	}
+
+	utils.ExecTemplate(w, "users.html", users)
 }
