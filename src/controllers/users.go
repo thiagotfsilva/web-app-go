@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"web-app-go/src/config"
+	"web-app-go/src/cookies"
 	"web-app-go/src/models"
 	"web-app-go/src/request"
 	"web-app-go/src/response"
@@ -99,5 +100,19 @@ func LoadUserProfileView(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := models.FindUser(userId, r)
-	fmt.Println(user, err)
+	if err != nil {
+		response.JSON(w, http.StatusInternalServerError, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+
+	cookie, _ := cookies.ReadCookies(r)
+	userIdLoged, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	utils.ExecTemplate(w, "user.html", struct {
+		User        models.User
+		UserIdLoged uint64
+	}{
+		User:        user,
+		UserIdLoged: userIdLoged,
+	})
 }

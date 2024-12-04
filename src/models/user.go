@@ -29,7 +29,7 @@ func FindUser(id uint64, r *http.Request) (User, error) {
 
 	go FindUserData(channelUser, id, r)
 	go FindFollowers(channelFollowers, id, r)
-	go FindoFollowing(channelFollowing, id, r)
+	go FindFollowing(channelFollowing, id, r)
 	go FindPublications(channelPublications, id, r)
 
 	var (
@@ -57,7 +57,7 @@ func FindUser(id uint64, r *http.Request) (User, error) {
 
 		case followingData := <-channelFollowing:
 			if followingData == nil {
-				return User{}, errors.New("erro ao buscar quem estou seguind")
+				return User{}, errors.New("erro ao buscar quem estou seguindo")
 			}
 
 			following = followingData
@@ -114,17 +114,17 @@ func FindFollowers(channel chan<- []User, userId uint64, r *http.Request) {
 	}
 
 	channel <- followers
-
 }
 
-func FindoFollowing(channel chan<- []User, userId uint64, r *http.Request) {
+//localhost:5000/users/1/following
+func FindFollowing(channel chan<- []User, userId uint64, r *http.Request) {
 	url := fmt.Sprintf("%s/users/%d/following", config.ApiUrl, userId)
 	res, err := request.HandlerRequestAuthenticate(r, http.MethodGet, url, nil)
 	if err != nil {
 		channel <- nil
 		return
 	}
-	res.Body.Close()
+	defer res.Body.Close()
 
 	var following []User
 	if err = json.NewDecoder(res.Body).Decode(&following); err != nil {
@@ -136,7 +136,7 @@ func FindoFollowing(channel chan<- []User, userId uint64, r *http.Request) {
 }
 
 func FindPublications(channel chan<- []Publication, userId uint64, r *http.Request) {
-	url := fmt.Sprintf("%s/publications/%d", config.ApiUrl, userId)
+	url := fmt.Sprintf("%s/users/%d/publications", config.ApiUrl, userId)
 	res, err := request.HandlerRequestAuthenticate(r, http.MethodGet, url, nil)
 	if err != nil {
 		channel <- nil
@@ -151,5 +151,4 @@ func FindPublications(channel chan<- []Publication, userId uint64, r *http.Reque
 	}
 
 	channel <- publications
-
 }
