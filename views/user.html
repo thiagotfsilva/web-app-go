@@ -15,7 +15,7 @@
 
   {{ $FollowingForLogeddUser := false }}
 
-  {{ range .User.Following }}
+  {{ range .User.Followers }}
 
   {{ if (eq .ID $.UserIdLoged) }}
   {{ $FollowingForLogeddUser = true }}
@@ -43,7 +43,7 @@
                 Seguindo: {{ len .User.Following }}
               </a>
             </p>
-            <a href="#" class="card-link">
+            <a class="card-link">
               {{ if $FollowingForLogeddUser }}
               <button id="unfollow" class="btn btn-info" data-user-id="{{ .User.ID }}">
                 Parar Seguir
@@ -84,6 +84,7 @@
   {{ template "footer" }}
   {{ template "scripts" }}
   <script src="/assets/js/publication.js"></script>
+  <script src="/assets/js/users.js"></script>
 </body>
 
 </html>

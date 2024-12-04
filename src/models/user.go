@@ -113,6 +113,11 @@ func FindFollowers(channel chan<- []User, userId uint64, r *http.Request) {
 		return
 	}
 
+	if followers == nil {
+		channel <- make([]User, 0)
+		return
+	}
+
 	channel <- followers
 }
 
@@ -129,6 +134,11 @@ func FindFollowing(channel chan<- []User, userId uint64, r *http.Request) {
 	var following []User
 	if err = json.NewDecoder(res.Body).Decode(&following); err != nil {
 		channel <- nil
+		return
+	}
+
+	if following == nil {
+		channel <- make([]User, 0)
 		return
 	}
 
@@ -150,5 +160,9 @@ func FindPublications(channel chan<- []Publication, userId uint64, r *http.Reque
 		return
 	}
 
+	if publications == nil {
+		channel <- make([]Publication, 0)
+		return
+	}
 	channel <- publications
 }
