@@ -21,7 +21,12 @@ var userRoutes = []Route{
 	{
 		URI:            "/find-users",
 		Method:         http.MethodGet,
-		Function:       controllers.LoadUserPage,
+		Function:       controllers.LoadUserFindView,
 		Authentication: true,
+	},
+	{
+		URI:      "/users/{userId}",
+		Method:   http.MethodGet,
+		Function: controllers.LoadUserProfileView,
 	},
 }

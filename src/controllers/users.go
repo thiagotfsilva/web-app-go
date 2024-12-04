@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"web-app-go/src/config"
 	"web-app-go/src/models"
 	"web-app-go/src/request"
 	"web-app-go/src/response"
 	"web-app-go/src/utils"
+
+	"github.com/gorilla/mux"
 )
 
 func LoadUserRegisterView(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +54,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, res.StatusCode, nil)
 }
 
-func LoadUserPage(w http.ResponseWriter, r *http.Request) {
+func LoadUserFindView(w http.ResponseWriter, r *http.Request) {
 	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
 	url := fmt.Sprintf("%s/users?user=%s", config.ApiUrl, nameOrNick)
 	res, err := request.HandlerRequestAuthenticate(
@@ -85,4 +88,16 @@ func LoadUserPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.ExecTemplate(w, "users.html", users)
+}
+
+func LoadUserProfileView(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userId, err := strconv.ParseUint(params["userId"], 10, 64)
+	if err != nil {
+		response.JSON(w, http.StatusBadRequest, response.ErroResponse{Erro: err.Error()})
+		return
+	}
+
+	user, err := models.FindUser(userId, r)
+	fmt.Println(user, err)
 }
