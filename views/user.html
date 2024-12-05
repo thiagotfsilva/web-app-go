@@ -34,12 +34,12 @@
               {{ .User.Name }} - {{ .User.Nick }} - Membro desde: {{ .User.CreatedAt.Format "02/01/2006" }}
             </h6>
             <p class="card-text">
-              <a href="#">
+              <a href="#" data-bs-toggle="modal" data-bs-target="#modal-followers">
                 Seguidores: {{ len .User.Followers }}
               </a>
             </p>
             <p class="card-text">
-              <a href="#">
+              <a href="#" data-bs-toggle="modal" data-bs-target="#modal-following">
                 Seguindo: {{ len .User.Following }}
               </a>
             </p>
@@ -80,7 +80,8 @@
       </div>
     </div>
   </div>
-
+  {{ template "modal-following" .User }}
+  {{ template "modal-followers" .User }}
   {{ template "footer" }}
   {{ template "scripts" }}
   <script src="/assets/js/publication.js"></script>
