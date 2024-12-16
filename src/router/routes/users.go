@@ -27,7 +27,7 @@ var userRoutes = []Route{
 	{
 		URI:            "/users/{userId}",
 		Method:         http.MethodGet,
-		Function:       controllers.LoadUserProfileView,
+		Function:       controllers.LoadUserPageView,
 		Authentication: true,
 	},
 	{
@@ -40,6 +40,24 @@ var userRoutes = []Route{
 		URI:            "/users/{userId}/follow",
 		Method:         http.MethodPost,
 		Function:       controllers.FollowUser,
+		Authentication: true,
+	},
+	{
+		URI:            "/profile",
+		Method:         http.MethodGet,
+		Function:       controllers.LoadUserProfileView,
+		Authentication: true,
+	},
+	{
+		URI:            "/form-edit",
+		Method:         http.MethodGet,
+		Function:       controllers.LoadFormEditUserView,
+		Authentication: true,
+	},
+	{
+		URI:            "/edit-user",
+		Method:         http.MethodPut,
+		Function:       controllers.EditUser,
 		Authentication: true,
 	},
 }

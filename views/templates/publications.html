@@ -18,7 +18,7 @@
 {{ define "header-publication" }}
 <h1 class="display-4">{{ .Title }}</h1>
 <p class="lead">{{ .Content }}</p>
-<a href="#">{{ .AuthorNickName }} - {{ .CreatedAt.Format "02/01/2006" }}</a>
+<a href="/users/{{ .AuthorId }}">{{ .AuthorNickName }} - {{ .CreatedAt.Format "02/01/2006" }}</a>
 <hr class="my-4">
 <!-- 
   formatação de data em go
